@@ -1,6 +1,10 @@
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import traceback
+import json
+
+with open(r"./spotify_api/config.json", "rt", encoding="UTF8") as configJson:
+	config = json.load(configJson)
 
 
 def getAudioFeatures(url: str):
@@ -16,8 +20,8 @@ def getAudioFeatures(url: str):
 			uri = url
 
 		client_credentials_manager = SpotifyClientCredentials(
-			client_id="7c8e50dae33c41c88e48909166bef20e",
-			client_secret="4fb5615b21b544edb5f647ab68dabcbd"
+			client_id=config['client_id'],
+			client_secret=config['client_secret']
 		)
 		sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 		sp.trace = True
