@@ -1,0 +1,27 @@
+{
+	"code": "SUCCESS",
+	"data": {
+		"albumInfo": {
+			"id": "6irebIc6UO8fN0jl4UlzBS",
+			"image": "https: //i.scdn.co/image/ab67616d0000b273f037c5fb9de6c78726cb8e2c",
+			"name": "SUPER REAL ME",
+			"release_date": "2024-03-25"
+		},
+		"artistInfo": [
+			{
+				"id": "36cgvBn0aadzOijnjjwqMN",
+				"name": "ILLIT"
+			}
+		],
+		"trackDetails": {
+			"popularity": 91,
+			"preview_url": "https: //p.scdn.co/mp3-preview/b3e85d7434b5fb072c7110197b3b896d04aa90e7?cid=7c8e50dae33c41c88e48909166bef20e"
+		},
+		"trackInfo": {
+			"id": "1aKvZDoLGkNMxoRYgkckZG",
+			"name": "Magnetic"
+		}
+	},
+	"error": false,
+	"message": "성공적으로 데이터를 불러왔습니다."
+}
