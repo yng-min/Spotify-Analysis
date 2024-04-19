@@ -30,7 +30,7 @@ def global_top50(response: Response, request: Request):
 	html += "<th align='center' style='color: grey; font-size: 12px;'>곡 제목</th>"
 	html += "<th align='center' style='color: grey; font-size: 12px;'>아티스트</th>"
 	html += "<th align='center' style='color: grey; font-size: 12px;'>분석 페이지</th>"
-	html += "<th align='center' style='color: grey; font-size: 12px;'>스포티파이 URL</th>"
+	html += "<th align='center' style='color: grey; font-size: 12px;'>스포티파이 바로가기</th>"
 	for i in range(len(data['trackInfo']['name'])):
 		rank = ""
 		html += "<tr>"
@@ -55,7 +55,7 @@ def global_top50(response: Response, request: Request):
 	html += "</body>"
 	html += "</html>"
 	import re
-	html = re.sub(r"\"", r"'", html)
+	html = re.sub(r"\"", r"&quot;", html)
 
 	response.headers['Content-Type'] = "text/html"
 	return html

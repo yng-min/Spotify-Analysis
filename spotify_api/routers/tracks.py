@@ -25,7 +25,8 @@ def tracks(response: Response, uri: str = None):
 			html += "<h1>Spotify Track Analysis</h1>"
 			html += "<h2>{artists} - {name}</h2>".format(artists=data['artistInfo']['name'][i].replace(";;", ","), name=data['trackInfo']['name'][i])
 
-			html += "<h5>트랙 정보</h5>"
+			html += "<hr>"
+			html += "<h3>- 트랙 정보</h3>"
 			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
 			html += "<tr>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>#</th>"
@@ -44,11 +45,11 @@ def tracks(response: Response, uri: str = None):
 			else:
 				rank = (data['rankInfo']['previousRank'][i] - data['rankInfo']['currentRank'][i])
 				if rank == 0:
-					rank = " - "
+					rank = "&nbsp;-&nbsp;"
 				elif rank > 0:
-					rank = f"↑{rank}"
+					rank = f"&nbsp;↑{rank}&nbsp;"
 				elif rank < 0:
-					rank = f"↓{-rank}"
+					rank = f"&nbsp;↓{-rank}&nbsp;"
 			html += "<td align='center'>{}</td>".format(rank)
 			html += "<td align='center'>{}점</td>".format(data['trackDetails']['popularity'][i])
 			duration = data['trackDetails']['duration_ms'][i] / 1000
@@ -64,17 +65,17 @@ def tracks(response: Response, uri: str = None):
 				html += "<td align='center'><a href='{}' target='_blank'>30초 미리듣기</a></td>".format(data['trackDetails']['preview_url'][i])
 			else:
 				html += "<td align='center'>(링크 없음)</td>"
-			html += "<td align='center'><a href='{}' target='_blank'>스포티파이에서 듣기</a></td>".format("https://open.spotify.com/track/" + data['trackInfo']['id'][i])
+			html += "<td align='center'><a href='{}' target='_blank'>스포티파이 바로가기</a></td>".format("https://open.spotify.com/track/" + data['trackInfo']['id'][i])
 			html += "</tr>"
 			html += "</table>"
 
-			html += "<h5>트랙 분석</h5>"
+			html += "<h3>- 트랙 분석</h3>"
 			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
 			html += "<tr>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>리듬 안정성 수치</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>에너지 수치</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>음성 단어 수치</th>"
-			html += "<th align='center' style='color: grey; font-size: 12px;'>음향 수치</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>음향성 수치</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>기악곡 수치</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>라이브 수치</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>분위기 수치</th>"
@@ -96,9 +97,10 @@ def tracks(response: Response, uri: str = None):
 			html += "</tr>"
 			html += "</table>"
 
-			html += "<h5>BART AI 추천곡</h5>"
+			html += "<h3>- BART AI 추천곡</h3>"
 			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
 			html += "<tr>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>#</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>트랙/수록곡</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>곡 길이</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>곡 제목</th>"
@@ -106,9 +108,10 @@ def tracks(response: Response, uri: str = None):
 			html += "<th align='center' style='color: grey; font-size: 12px;'>앨범</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>발매일</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>미리 들어보기</th>"
-			html += "<th align='center' style='color: grey; font-size: 12px;'>스포티파이에서 듣기</th>"
-			for j in range(len(bart['trackInfo'])):
+			html += "<th align='center' style='color: grey; font-size: 12px;'>스포티파이 바로가기</th>"
+			for j in range(len(bart['trackInfo']['id'])):
 				html += "<tr>"
+				html += "<td align='center'>{}</td>".format(j+1)
 				html += "<td align='center'>{track_number}/{total_tracks}</td>".format(track_number=bart['trackInfo']['track_number'][j], total_tracks=bart['albumInfo']['total_tracks'][j])
 				b_duration = bart['trackInfo']['duration_ms'][j] / 1000
 				b_minutes = round(b_duration // 60)
@@ -129,10 +132,34 @@ def tracks(response: Response, uri: str = None):
 			html += "</tr>"
 			html += "</table>"
 
+	html += "<br><br><br><br><br>"
+	html += "<h3>- 분석 데이터 부가 설명</h3>"
+	html += "<h4>* 리듬 안정성 수치(Danceability)</h4>"
+	html += "템포, 리듬 안정성, 비트 강도 및 전반적인 규칙성을 포함한 음악적 요소의 조합을 기반으로 트랙이 춤을 즐기기에 얼마나 적합한지를 나타냅니다.<br>값이 0.0이면 춤을 추기 매우 부적합하고 1.0이면 춤을 추기에 매우 적합합니다."
+	html += "<br>"
+	html += "<h4>* 에너지 수치(Energy)</h4>"
+	html += "0.0에서 1.0 사이의 척도이며 강도와 활동에 대한 지각적 척도를 나타냅니다.<br>일반적으로 에너지가 넘치는 트랙은 빠르고 시끄럽게 느껴집니다. 예를 들어, 데스 메탈은 에너지가 높은 반면 바흐의 전주곡은 낮은 점수를 받았습니다.<br>이 속성에 기여하는 지각적 특징에는 동적 범위, 인지된 음량, 음색, 시작 BPM 및 일반 엔트로피가 포함됩니다."
+	html += "<br>"
+	html += "<h4>* 음성 단어 수치(Speechiness)</h4>"
+	html += "트랙에서 음성 단어의 존재를 감지합니다. 음성과 유사한 녹음(예: 토크쇼, 오디오북, 시)이 많을수록 값은 1.0에 가까워집니다.<br>0.66 이상의 값은 대부분이 음성으로 구성된 트랙을 나타냅니다. 0.33에서 0.66 사이의 값은 랩 음악과 같은 경우를 포함하여 섹션 또는 레이어로 음악과 음성을 모두 포함할 수 있는 트랙을 나타냅니다.<br>0.33 미만의 값은 음악 및 기타 음성과 유사한 트랙을 나타낼 가능성이 높습니다."
+	html += "<br>"
+	html += "<h4>* 음향성 수치(Acousticness)</h4>"
+	html += "트랙이 전자 장치를 사용하지 않고 피아노나 드럼세트 등의 악기를 연주하는지 여부에 대한 0.0에서 1.0 사이의 신뢰도 측정값입니다. 1.0은 트랙이 음향적이라는 높은 신뢰도를 나타냅니다."
+	html += "<br>"
+	html += "<h4>* 기악곡 수치(Instrumentalness)</h4>"
+	html += "트랙에 보컬이 포함되어 있지 않은지 여부를 예측합니다. 이 문맥에서는 '우'와 '아' 소리가 악기 소리로 간주됩니다. 랩이나 음성 트랙은 '보컬'입니다.<br>기악성 수치 값이 1.0에 가까울수록 트랙에 보컬 콘텐츠가 포함되지 않을 가능성이 커집니다. 0.5보다 큰 값은 기악 트랙을 나타내기 위한 것이지만 값이 1.0에 가까울수록 신뢰도가 높아집니다."
+	html += "<br>"
+	html += "<h4>* 라이브 수치(Liveness)</h4>"
+	html += "트랙에서 청중의 존재를 감지합니다. 값이 높을수록 트랙이 라이브로 수행될 확률이 높아집니다. 0.8보다 큰 값은 트랙이 라이브 버전일 가능성이 높습니다."
+	html += "<br>"
+	html += "<h4>* 분위기 수치(Valence)</h4>"
+	html += "트랙이 전달하는 음악적 긍정성을 설명하는 0.0에서 1.0 사이의 측정값입니다. 값이 높은 트랙은 긍정적으로 들리는 반면(예: 행복함, 쾌활함, 행복감), 값이 낮은 트랙은 부정적으로 들립니다(예: 슬픔, 우울, 화남)."
+	html += "<br>"
+
 	html += "</body>"
 	html += "</html>"
 	import re
-	html = re.sub(r"\"", r"'", html)
+	html = re.sub(r"\"", r"&quot;", html)
 
 	response.headers['Content-Type'] = "text/html"
 	return html
