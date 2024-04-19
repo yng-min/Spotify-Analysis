@@ -139,6 +139,8 @@ config.json
 
 # sqlite3 데이터 파일들 무시
 # *.sqlite
+charts_global_top50.sqlite
+tracks.sqlite
 
 # log 파일 무시
 *.log
