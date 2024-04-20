@@ -69,6 +69,87 @@ def tracks(response: Response, uri: str = None):
 			html += "</tr>"
 			html += "</table>"
 
+			html += "<hr>"
+			html += "<h3>- 트랙 세부정보</h3>"
+			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
+			html += "<tr>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>BPM</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>BPM 정확도</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>Key</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>Key 정확도</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>박자표</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>박자표 정확도</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>분석 샘플레이트</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>분석 채널</th>"
+			html += "<tr>"
+			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['tempo'][i])} bpm" if data['trackAnalysis']['tempo'][i] != None else "(데이터 없음)")
+			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['tempo_confidence'][i] * 100, ndigits=2)}%" if data['trackAnalysis']['tempo_confidence'][i] != None else "(데이터 없음)")
+			key, mode = None, None
+			if data['trackAnalysis']['key'][i] == -1 or data['trackAnalysis']['key'][i] == None:
+				key = None
+			elif data['trackAnalysis']['key'][i] == 0:
+				key = "C"
+			elif data['trackAnalysis']['key'][i] == 1:
+				key = "C#/Db"
+			elif data['trackAnalysis']['key'][i] == 2:
+				key = "D"
+			elif data['trackAnalysis']['key'][i] == 3:
+				key = "D#/Eb"
+			elif data['trackAnalysis']['key'][i] == 4:
+				key = "E"
+			elif data['trackAnalysis']['key'][i] == 5:
+				key = "F"
+			elif data['trackAnalysis']['key'][i] == 6:
+				key = "F#/Gb"
+			elif data['trackAnalysis']['key'][i] == 7:
+				key = "G"
+			elif data['trackAnalysis']['key'][i] == 8:
+				key = "G#/Ab"
+			elif data['trackAnalysis']['key'][i] == 9:
+				key = "A"
+			elif data['trackAnalysis']['key'][i] == 10:
+				key = "A#/Bb"
+			elif data['trackAnalysis']['key'][i] == 11:
+				key = "B"
+			if data['trackAnalysis']['mode'][i] == None:
+				mode = None
+			elif data['trackAnalysis']['mode'][i] == 0:
+				mode = "minor"
+			elif data['trackAnalysis']['mode'][i] == 1:
+				mode = "Major"
+			if key == None:
+				key_mode = "(데이터 없음)"
+			else:
+				key_mode = f"{key} {mode}"
+			html += "<td align='center'>{}</td>".format(key_mode)
+			key_confidence, mode_confidence, key_mode_confidence = "", "", ""
+			if data['trackAnalysis']['key_confidence'][i] != None:
+				key_confidence = f"{round(data['trackAnalysis']['key_confidence'][i] * 100, ndigits=2)}%"
+			if data['trackAnalysis']['mode_confidence'][i] != None:
+				mode_confidence = f"{round(data['trackAnalysis']['mode_confidence'][i] * 100, ndigits=2)}%"
+			if data['trackAnalysis']['mode_confidence'][i] == None:
+				mode_confidence = "(데이터 없음)"
+			if data['trackAnalysis']['key_confidence'][i] == None:
+				key_confidence = "(데이터 없음)"
+				mode_confidence = "(데이터 없음)"
+			key_mode_confidence = f"{key_confidence} / {mode_confidence}"
+			html += "<td align='center'>{}</td>".format(key_mode_confidence)
+			html += "<td align='center'>{}</td>".format(f"{data['trackAnalysis']['time_signature'][i]}/4" if data['trackAnalysis']['time_signature'][i] != None else "(데이터 없음)")
+			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['time_signature_confidence'][i] * 100, ndigits=2)}%" if data['trackAnalysis']['time_signature_confidence'][i] != None else "(데이터 없음)")
+			html += "<td align='center'>{}</td>".format(f"{data['trackAnalysis']['analysis_sample_rate'][i]}Hz" if data['trackAnalysis']['analysis_sample_rate'][i] != None else "(데이터 없음)")
+			analysis_channels = ""
+			if data['trackAnalysis']['analysis_channels'][i] == None:
+				analysis_channels = "(데이터 없음)"
+			elif data['trackAnalysis']['analysis_channels'][i] == 1:
+				analysis_channels = "Mono"
+			elif data['trackAnalysis']['analysis_channels'][i] == 2:
+				analysis_channels = "Stereo"
+			else:
+				analysis_channels = "(측정되지 않음)"
+			html += "<td align='center'>{}</td>".format(analysis_channels)
+			html += "</tr>"
+			html += "</table>"
+
 			html += "<h3>- 트랙 분석</h3>"
 			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
 			html += "<tr>"

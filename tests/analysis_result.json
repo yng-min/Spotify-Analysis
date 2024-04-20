@@ -1,0 +1,22 @@
+{
+    "error": false,
+    "code": "SUCCESS",
+    "message": "성공적으로 데이터를 불러왔습니다.",
+    "data": {
+        "trackInfo": {
+            "id": "1aKvZDoLGkNMxoRYgkckZG"
+        },
+        "trackAnalysis": {
+            "analysis_sample_rate": 22050,
+            "analysis_channels": 1,
+            "tempo": 131.067,
+            "tempo_confidence": 0.938,
+            "key": 6,
+            "key_confidence": 0.41,
+            "mode": 1,
+            "mode_confidence": 0.517,
+            "time_signature": 4,
+            "time_signature_confidence": 0.463
+        }
+    }
+}

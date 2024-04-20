@@ -11,8 +11,9 @@ def getBart(reco_type: int, reco_str: str):
 	"""
 	Spotify의 BART AI에게 음악 추천을 요청하는 함수
 
-	reco_type: 추천 타입(0: 아티스트 | 1: 트랙 | 2: 장르)
-	reco_str: 추천 받을 요소
+	매개변수:
+		- reco_type: 추천 타입(0: 아티스트 | 1: 트랙 | 2: 장르)
+		- reco_str: 추천 받을 요소
 	"""
 	try:
 		client_credentials_manager = SpotifyClientCredentials(

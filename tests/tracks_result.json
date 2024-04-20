@@ -1,5 +1,7 @@
 {
+	"error": false,
 	"code": "SUCCESS",
+	"message": "성공적으로 데이터를 불러왔습니다.",
 	"data": {
 		"albumInfo": {
 			"id": "6irebIc6UO8fN0jl4UlzBS",
@@ -21,7 +23,5 @@
 			"id": "1aKvZDoLGkNMxoRYgkckZG",
 			"name": "Magnetic"
 		}
-	},
-	"error": false,
-	"message": "성공적으로 데이터를 불러왔습니다."
+	}
 }

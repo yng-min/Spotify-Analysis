@@ -11,7 +11,8 @@ def getTracks(url: str):
 	"""
 	Spotify의 트랙 데이터를 요청하는 함수
 
-	url: 트랙 URL
+	매개변수:
+		- url: 트랙 URL
 	"""
 	try:
 		if url.find("https://") >= 0:

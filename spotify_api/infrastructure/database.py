@@ -9,7 +9,7 @@ class DatabaseCharts:
 
 	def setup():
 		"""
-		Spotify 차트 데이터를 저장하기 위한 데이터베이스 초기 설정을 담당하는 함수입니다.
+		Spotify 차트 데이터를 저장하기 위한 데이터베이스 초기 설정을 담당하는 함수
 		"""
 		if os.path.isfile(r"./spotify_api/database/charts_global_top50.sqlite"):
 			return
@@ -168,6 +168,20 @@ class DatabaseTracks:
 			)
 		""")
 		tracksDB.execute("""
+			CREATE TABLE IF NOT EXISTS trackAnalysis(
+				analysis_sample_rate INTEGER,
+				analysis_channels INTEGER,
+				tempo REAL,
+				tempo_confidence REAL,
+				key INTEGER,
+				key_confidence REAL,
+				mode INTEGER,
+				mode_confidence INTEGER,
+				time_signature INTEGER,
+				time_signature_confidence REAL
+			)
+		""")
+		tracksDB.execute("""
 			CREATE TABLE IF NOT EXISTS albumInfo(
 				id TEXT,
 				name TEXT,
@@ -206,6 +220,8 @@ class DatabaseTracks:
 		tracksDB.execute("DELETE FROM trackInfo")
 		## trackDetails 초기화
 		tracksDB.execute("DELETE FROM trackDetails")
+		## trackAnalysis 초기화
+		tracksDB.execute("DELETE FROM trackAnalysis")
 		## albumInfo 초기화
 		tracksDB.execute("DELETE FROM albumInfo")
 		## artistInfo 초기화
@@ -219,9 +235,11 @@ class DatabaseTracks:
 		"""
 		Spotify 트랙 데이터의 저장을 담당하는 함수입니다.
 
-		data: Spotify 트랙 데이터와 피처 데이터
-		- 트랙 데이터: 'spotify_module/get_tracks.py'를 통해 'infrastructure/check_database.py'에서 받아와야 함.
-		- 피처 데이터: 'spotify_module/get_audioFeatures.py'를 통해 'infrastructure/check_database.py'에서 받아와야 함.
+		매개변수:
+			- data: Spotify 트랙 데이터와 특징 데이터, 분석 데이터
+				> 트랙 데이터: 'spotify_module/get_tracks.py'를 통해 'infrastructure/check_database.py'에서 받아와야 함.
+				> 특징 데이터: 'spotify_module/get_audioFeatures.py'를 통해 'infrastructure/check_database.py'에서 받아와야 함.
+				> 분석 데이터: 'spotify_module/get_audioAnalysis.py'를 통해 'infrastructure/check_database.py'에서 받아와야 함.
 		"""
 		if not os.path.isfile(r"./spotify_api/database/tracks.sqlite"):
 			DatabaseTracks.setup()
@@ -234,6 +252,7 @@ class DatabaseTracks:
 		for i in range(len(data['trackInfo']['id'])):
 			tracksDB.execute("INSERT INTO trackInfo(id, name) VALUES(?, ?)", (data['trackInfo']['id'][i], data['trackInfo']['name'][i]))
 			tracksDB.execute("INSERT INTO trackDetails(preview_url, duration_ms, popularity, danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackDetails']['preview_url'][i], data['trackDetails']['duration_ms'][i], data['trackDetails']['popularity'][i], data['trackDetails']['danceability'][i], data['trackDetails']['energy'][i], data['trackDetails']['speechiness'][i], data['trackDetails']['acousticness'][i], data['trackDetails']['instrumentalness'][i], data['trackDetails']['liveness'][i], data['trackDetails']['valence'][i]))
+			tracksDB.execute("INSERT INTO trackAnalysis(analysis_sample_rate, analysis_channels, tempo, tempo_confidence, key, key_confidence, mode, mode_confidence, time_signature, time_signature_confidence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackAnalysis']['analysis_sample_rate'][i], data['trackAnalysis']['analysis_channels'][i], data['trackAnalysis']['tempo'][i], data['trackAnalysis']['tempo_confidence'][i], data['trackAnalysis']['key'][i], data['trackAnalysis']['key_confidence'][i], data['trackAnalysis']['mode'][i], data['trackAnalysis']['mode_confidence'][i], data['trackAnalysis']['time_signature'][i], data['trackAnalysis']['time_signature_confidence'][i]))
 			tracksDB.execute("INSERT INTO albumInfo(id, name, image, release_date) VALUES(?, ?, ? ,?)", (data['albumInfo']['id'][i], data['albumInfo']['name'][i], data['albumInfo']['image'][i], data['albumInfo']['release_date'][i]))
 			tracksDB.execute("INSERT INTO artistInfo(id, name) VALUES(?, ?)", (data['artistInfo']['id'][i][:-3], data['artistInfo']['name'][i][:-3]))
 			tracksDB.execute("INSERT INTO rankInfo(currentRank, previousRank, entryStatus) VALUES(?, ?, ?)", (data['rankInfo']['currentRank'][i], data['rankInfo']['previousRank'][i], data['rankInfo']['entryStatus'][i]))
@@ -252,9 +271,12 @@ class DatabaseTracks:
 		tracksCONN.row_factory = sqlite3.Row
 		tracksDB = tracksCONN.cursor()
 
+		## 차트 마지막 수정일자
 		database_lateseDate = ""
+		## 트랙 정보
 		tracks_id = []
 		tracks_name = []
+		## 트랙 특징 정보
 		tracks_preview_url = []
 		tracks_duration_ms = []
 		tracks_popularity = []
@@ -265,12 +287,26 @@ class DatabaseTracks:
 		tracks_instrumentalness = []
 		tracks_liveness = []
 		tracks_valence = []
+		## 트랙 분석 정보
+		tracks_analysis_sample_rate = []
+		tracks_analysis_channels = []
+		tracks_tempo = []
+		tracks_tempo_confidence = []
+		tracks_key = []
+		tracks_key_confidence = []
+		tracks_mode = []
+		tracks_mode_confidence = []
+		tracks_time_signature = []
+		tracks_time_signature_confidence = []
+		## 앨범 정보
 		albums_id = []
 		albums_name = []
 		albums_image = []
 		albums_release_date = []
+		## 아티스트 정보
 		artists_id = []
 		artists_name = []
+		## 순위 정보
 		ranks_currentRank = []
 		ranks_previousRank = []
 		ranks_entryStatus = []
@@ -295,6 +331,19 @@ class DatabaseTracks:
 			tracks_instrumentalness.append(trackDetails[i]['instrumentalness'])
 			tracks_liveness.append(trackDetails[i]['liveness'])
 			tracks_valence.append(trackDetails[i]['valence'])
+		## trackAnalysis 읽기
+		trackAnalysis = tracksDB.execute("SELECT * FROM trackAnalysis").fetchall()
+		for i in range(len(trackAnalysis)):
+			tracks_analysis_sample_rate.append(trackAnalysis[i]['analysis_sample_rate'])
+			tracks_analysis_channels.append(trackAnalysis[i]['analysis_channels'])
+			tracks_tempo.append(trackAnalysis[i]['tempo'])
+			tracks_tempo_confidence.append(trackAnalysis[i]['tempo_confidence'])
+			tracks_key.append(trackAnalysis[i]['key'])
+			tracks_key_confidence.append(trackAnalysis[i]['key_confidence'])
+			tracks_mode.append(trackAnalysis[i]['mode'])
+			tracks_mode_confidence.append(trackAnalysis[i]['mode_confidence'])
+			tracks_time_signature.append(trackAnalysis[i]['time_signature'])
+			tracks_time_signature_confidence.append(trackAnalysis[i]['time_signature_confidence'])
 		## albumInfo 읽기
 		albumInfo = tracksDB.execute("SELECT * FROM albumInfo").fetchall()
 		for i in range(len(albumInfo)):
@@ -335,6 +384,18 @@ class DatabaseTracks:
 				"instrumentalness": tracks_instrumentalness,
 				"liveness": tracks_liveness,
 				"valence": tracks_valence
+			},
+			"trackAnalysis": {
+				"analysis_sample_rate": tracks_analysis_sample_rate,
+				"analysis_channels": tracks_analysis_channels,
+				"tempo": tracks_tempo,
+				"tempo_confidence": tracks_tempo_confidence,
+				"key": tracks_key,
+				"key_confidence": tracks_key_confidence,
+				"mode": tracks_mode,
+				"mode_confidence": tracks_mode_confidence,
+				"time_signature": tracks_time_signature,
+				"time_signature_confidence": tracks_time_signature_confidence
 			},
 			"albumInfo": {
 				"id": albums_id,

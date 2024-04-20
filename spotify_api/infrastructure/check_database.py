@@ -77,8 +77,10 @@ class CheckTracks:
 		if not os.path.isfile(r"./spotify_api/database/tracks.sqlite"):
 			DatabaseTracks.setup()
 
+		## 트랙 정보
 		tracks_id = []
 		tracks_name = []
+		## 트랙 특징 정보
 		tracks_preview_url = []
 		tracks_duration_ms = []
 		tracks_popularity = []
@@ -89,12 +91,26 @@ class CheckTracks:
 		tracks_instrumentalness = []
 		tracks_liveness = []
 		tracks_valence = []
+		## 트랙 분석 정보
+		tracks_analysis_sample_rate = []
+		tracks_analysis_channels = []
+		tracks_tempo = []
+		tracks_tempo_confidence = []
+		tracks_key = []
+		tracks_key_confidence = []
+		tracks_mode = []
+		tracks_mode_confidence = []
+		tracks_time_signature = []
+		tracks_time_signature_confidence = []
+		## 앨범 정보
 		albums_id = []
 		albums_name = []
 		albums_image = []
 		albums_release_date = []
+		## 아티스트 정보
 		artists_id = []
 		artists_name = []
+		## 순위 정보
 		ranks_currentRank = []
 		ranks_previousRank = []
 		ranks_entryStatus = []
@@ -131,14 +147,20 @@ class CheckTracks:
 
 					for i in range(len(chartResult['entries'])):
 						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
-						track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
-						feature = SpotifyData.get_audioFeatures(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 						print(i)
+						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+						track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 						print(track)
+						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+						feature = SpotifyData.get_audioFeatures(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 						print(feature)
+						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+						analysis = SpotifyData.get_audioAnalysis(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
+						print(analysis)
 
 						tracks_id.append(track['data']['trackInfo']['id'])
 						tracks_name.append(track['data']['trackInfo']['name'])
+
 						tracks_preview_url.append(track['data']['trackDetails']['preview_url'])
 						tracks_duration_ms.append(feature['data']['trackInfo']['duration_ms'])
 						tracks_popularity.append(track['data']['trackDetails']['popularity'])
@@ -149,19 +171,44 @@ class CheckTracks:
 						tracks_instrumentalness.append(feature['data']['trackFeatures']['instrumentalness'])
 						tracks_liveness.append(feature['data']['trackFeatures']['liveness'])
 						tracks_valence.append(feature['data']['trackFeatures']['valence'])
+
+						if analysis['code'] == "EMPTY_DATA":
+							tracks_analysis_sample_rate.append(None)
+							tracks_analysis_channels.append(None)
+							tracks_tempo.append(None)
+							tracks_tempo_confidence.append(None)
+							tracks_key.append(None)
+							tracks_key_confidence.append(None)
+							tracks_mode.append(None)
+							tracks_mode_confidence.append(None)
+							tracks_time_signature.append(None)
+							tracks_time_signature_confidence.append(None)
+						tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
+						tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
+						tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
+						tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
+						tracks_key.append(analysis['data']['trackAnalysis']['key'])
+						tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
+						tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
+						tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
+						tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
+						tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+
 						albums_id.append(track['data']['albumInfo']['id'])
 						albums_name.append(track['data']['albumInfo']['name'])
 						albums_image.append(track['data']['albumInfo']['image'])
 						albums_release_date.append(track['data']['albumInfo']['release_date'])
+
 						artist_id, artist_name = "", ""
 						for j in range(len(track['data']['artistInfo'])):
 							artist_id += f"{track['data']['artistInfo'][j]['id']};; "
 							artist_name += f"{track['data']['artistInfo'][j]['name']};; "
 						artists_id.append(artist_id)
 						artists_name.append(artist_name)
-						ranks_currentRank.append(chartResult['entries'][i]['trackMetadata']['chartEntryData']['currentRank'])
-						ranks_previousRank.append(chartResult['entries'][i]['trackMetadata']['chartEntryData']['previouesRank'])
-						ranks_entryStatus.append(chartResult['entries'][i]['trackMetadata']['chartEntryData']['entryStatus'])
+
+						ranks_currentRank.append(chartResult['entries'][i]['chartEntryData']['currentRank'])
+						ranks_previousRank.append(chartResult['entries'][i]['chartEntryData']['previousRank'])
+						ranks_entryStatus.append(chartResult['entries'][i]['chartEntryData']['entryStatus'])
 
 					data = {
 						"databaseInfo": {
@@ -183,6 +230,18 @@ class CheckTracks:
 							"liveness": tracks_liveness,
 							"valence": tracks_valence
 						},
+						"trackAnalysis": {
+							"analysis_sample_rate": tracks_analysis_sample_rate,
+							"analysis_channels": tracks_analysis_channels,
+							"tempo": tracks_tempo,
+							"tempo_confidence": tracks_tempo_confidence,
+							"key": tracks_key,
+							"key_confidence": tracks_key_confidence,
+							"mode": tracks_mode,
+							"mode_confidence": tracks_mode_confidence,
+							"time_signature": tracks_time_signature,
+							"time_signature_confidence": tracks_time_signature_confidence
+						},
 						"albumInfo": {
 							"id": albums_id,
 							"name": albums_name,
@@ -199,7 +258,7 @@ class CheckTracks:
 							"entryStatus": ranks_entryStatus
 						}
 					}
-					DatabaseTracks.save(data_1=data, data_2=feature)
+					DatabaseTracks.save(data=data)
 					delta = time.time() - start
 					print(f"[Check Tracks] 최신 정보 저장을 완료했습니다. ({delta}초 소요)")
 
@@ -217,14 +276,20 @@ class CheckTracks:
 
 			for i in range(len(chartResult['entries'])):
 				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
-				track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
-				feature = SpotifyData.get_audioFeatures(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 				print(i)
+				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+				track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 				print(track)
+				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+				feature = SpotifyData.get_audioFeatures(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 				print(feature)
+				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
+				analysis = SpotifyData.get_audioAnalysis(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
+				print(analysis)
 
 				tracks_id.append(track['data']['trackInfo']['id'])
 				tracks_name.append(track['data']['trackInfo']['name'])
+
 				tracks_preview_url.append(track['data']['trackDetails']['preview_url'])
 				tracks_duration_ms.append(feature['data']['trackInfo']['duration_ms'])
 				tracks_popularity.append(track['data']['trackDetails']['popularity'])
@@ -235,16 +300,41 @@ class CheckTracks:
 				tracks_instrumentalness.append(feature['data']['trackFeatures']['instrumentalness'])
 				tracks_liveness.append(feature['data']['trackFeatures']['liveness'])
 				tracks_valence.append(feature['data']['trackFeatures']['valence'])
+
+				if analysis['code'] == "EMPTY_DATA":
+					tracks_analysis_sample_rate.append(None)
+					tracks_analysis_channels.append(None)
+					tracks_tempo.append(None)
+					tracks_tempo_confidence.append(None)
+					tracks_key.append(None)
+					tracks_key_confidence.append(None)
+					tracks_mode.append(None)
+					tracks_mode_confidence.append(None)
+					tracks_time_signature.append(None)
+					tracks_time_signature_confidence.append(None)
+				tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
+				tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
+				tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
+				tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
+				tracks_key.append(analysis['data']['trackAnalysis']['key'])
+				tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
+				tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
+				tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
+				tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
+				tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+
 				albums_id.append(track['data']['albumInfo']['id'])
 				albums_name.append(track['data']['albumInfo']['name'])
 				albums_image.append(track['data']['albumInfo']['image'])
 				albums_release_date.append(track['data']['albumInfo']['release_date'])
+
 				artist_id, artist_name = "", ""
 				for j in range(len(track['data']['artistInfo'])):
 					artist_id += f"{track['data']['artistInfo'][j]['id']};; "
 					artist_name += f"{track['data']['artistInfo'][j]['name']};; "
 				artists_id.append(artist_id)
 				artists_name.append(artist_name)
+
 				ranks_currentRank.append(chartResult['entries'][i]['chartEntryData']['currentRank'])
 				ranks_previousRank.append(chartResult['entries'][i]['chartEntryData']['previousRank'])
 				ranks_entryStatus.append(chartResult['entries'][i]['chartEntryData']['entryStatus'])
@@ -268,6 +358,18 @@ class CheckTracks:
 					"instrumentalness": tracks_instrumentalness,
 					"liveness": tracks_liveness,
 					"valence": tracks_valence
+				},
+				"trackAnalysis": {
+					"analysis_sample_rate": tracks_analysis_sample_rate,
+					"analysis_channels": tracks_analysis_channels,
+					"tempo": tracks_tempo,
+					"tempo_confidence": tracks_tempo_confidence,
+					"key": tracks_key,
+					"key_confidence": tracks_key_confidence,
+					"mode": tracks_mode,
+					"mode_confidence": tracks_mode_confidence,
+					"time_signature": tracks_time_signature,
+					"time_signature_confidence": tracks_time_signature_confidence
 				},
 				"albumInfo": {
 					"id": albums_id,

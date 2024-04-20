@@ -11,7 +11,8 @@ def getGlobalWeeklyCharts(url: str = globalChartURL):
 	"""
 	Spotify의 글로벌 위클리 차트 데이터를 요청하는 함수
 
-	url: 차트 요청 API URL
+	매개변수:
+		- url: 차트 요청 API URL
 	"""
 	try:
 		result = requests.get(url=url, headers=headers)
