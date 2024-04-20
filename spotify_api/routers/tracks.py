@@ -69,7 +69,6 @@ def tracks(response: Response, uri: str = None):
 			html += "</tr>"
 			html += "</table>"
 
-			html += "<hr>"
 			html += "<h3>- 트랙 세부정보</h3>"
 			html += "<table border='1'; style='border-collapse: collapse; border-spacing: 0;'>"
 			html += "<tr>"
@@ -79,10 +78,11 @@ def tracks(response: Response, uri: str = None):
 			html += "<th align='center' style='color: grey; font-size: 12px;'>Key 정확도</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>박자표</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>박자표 정확도</th>"
+			html += "<th align='center' style='color: grey; font-size: 12px;'>라우드니스(dB)</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>분석 샘플레이트</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>분석 채널</th>"
 			html += "<tr>"
-			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['tempo'][i])} bpm" if data['trackAnalysis']['tempo'][i] != None else "(데이터 없음)")
+			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['tempo'][i])}bpm" if data['trackAnalysis']['tempo'][i] != None else "(데이터 없음)")
 			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['tempo_confidence'][i] * 100, ndigits=2)}%" if data['trackAnalysis']['tempo_confidence'][i] != None else "(데이터 없음)")
 			key, mode = None, None
 			if data['trackAnalysis']['key'][i] == -1 or data['trackAnalysis']['key'][i] == None:
@@ -136,6 +136,7 @@ def tracks(response: Response, uri: str = None):
 			html += "<td align='center'>{}</td>".format(key_mode_confidence)
 			html += "<td align='center'>{}</td>".format(f"{data['trackAnalysis']['time_signature'][i]}/4" if data['trackAnalysis']['time_signature'][i] != None else "(데이터 없음)")
 			html += "<td align='center'>{}</td>".format(f"{round(data['trackAnalysis']['time_signature_confidence'][i] * 100, ndigits=2)}%" if data['trackAnalysis']['time_signature_confidence'][i] != None else "(데이터 없음)")
+			html += "<td align='center'>{}</td>".format(f"{data['trackAnalysis']['loudness'][i]}dB" if data['trackAnalysis']['loudness'][i] != None else "(데이터 없음)")
 			html += "<td align='center'>{}</td>".format(f"{data['trackAnalysis']['analysis_sample_rate'][i]}Hz" if data['trackAnalysis']['analysis_sample_rate'][i] != None else "(데이터 없음)")
 			analysis_channels = ""
 			if data['trackAnalysis']['analysis_channels'][i] == None:

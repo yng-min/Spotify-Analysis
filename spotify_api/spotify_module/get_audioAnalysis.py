@@ -40,6 +40,7 @@ def getAudioAnalysis(url: str):
 		track_mode_confidence = trackAnalysis['track']['mode_confidence']
 		track_time_signature = trackAnalysis['track']['time_signature']
 		track_time_signature_confidence = trackAnalysis['track']['time_signature_confidence']
+		track_loudness = trackAnalysis['track']['loudness']
 
 		data = {
 			"trackInfo": {
@@ -56,6 +57,7 @@ def getAudioAnalysis(url: str):
 				"mode_confidence": track_mode_confidence,
 				"time_signature": track_time_signature,
 				"time_signature_confidence": track_time_signature_confidence,
+				"loudness": track_loudness
 			}
 		}
 		return { "error": False, "code": "SUCCESS", "message": "성공적으로 데이터를 불러왔습니다.", "data": data }

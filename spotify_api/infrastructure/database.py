@@ -178,7 +178,8 @@ class DatabaseTracks:
 				mode INTEGER,
 				mode_confidence INTEGER,
 				time_signature INTEGER,
-				time_signature_confidence REAL
+				time_signature_confidence REAL,
+				loudness REAL
 			)
 		""")
 		tracksDB.execute("""
@@ -252,7 +253,7 @@ class DatabaseTracks:
 		for i in range(len(data['trackInfo']['id'])):
 			tracksDB.execute("INSERT INTO trackInfo(id, name) VALUES(?, ?)", (data['trackInfo']['id'][i], data['trackInfo']['name'][i]))
 			tracksDB.execute("INSERT INTO trackDetails(preview_url, duration_ms, popularity, danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackDetails']['preview_url'][i], data['trackDetails']['duration_ms'][i], data['trackDetails']['popularity'][i], data['trackDetails']['danceability'][i], data['trackDetails']['energy'][i], data['trackDetails']['speechiness'][i], data['trackDetails']['acousticness'][i], data['trackDetails']['instrumentalness'][i], data['trackDetails']['liveness'][i], data['trackDetails']['valence'][i]))
-			tracksDB.execute("INSERT INTO trackAnalysis(analysis_sample_rate, analysis_channels, tempo, tempo_confidence, key, key_confidence, mode, mode_confidence, time_signature, time_signature_confidence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackAnalysis']['analysis_sample_rate'][i], data['trackAnalysis']['analysis_channels'][i], data['trackAnalysis']['tempo'][i], data['trackAnalysis']['tempo_confidence'][i], data['trackAnalysis']['key'][i], data['trackAnalysis']['key_confidence'][i], data['trackAnalysis']['mode'][i], data['trackAnalysis']['mode_confidence'][i], data['trackAnalysis']['time_signature'][i], data['trackAnalysis']['time_signature_confidence'][i]))
+			tracksDB.execute("INSERT INTO trackAnalysis(analysis_sample_rate, analysis_channels, tempo, tempo_confidence, key, key_confidence, mode, mode_confidence, time_signature, time_signature_confidence, loudness) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackAnalysis']['analysis_sample_rate'][i], data['trackAnalysis']['analysis_channels'][i], data['trackAnalysis']['tempo'][i], data['trackAnalysis']['tempo_confidence'][i], data['trackAnalysis']['key'][i], data['trackAnalysis']['key_confidence'][i], data['trackAnalysis']['mode'][i], data['trackAnalysis']['mode_confidence'][i], data['trackAnalysis']['time_signature'][i], data['trackAnalysis']['time_signature_confidence'][i], data['trackAnalysis']['loudness'][i]))
 			tracksDB.execute("INSERT INTO albumInfo(id, name, image, release_date) VALUES(?, ?, ? ,?)", (data['albumInfo']['id'][i], data['albumInfo']['name'][i], data['albumInfo']['image'][i], data['albumInfo']['release_date'][i]))
 			tracksDB.execute("INSERT INTO artistInfo(id, name) VALUES(?, ?)", (data['artistInfo']['id'][i][:-3], data['artistInfo']['name'][i][:-3]))
 			tracksDB.execute("INSERT INTO rankInfo(currentRank, previousRank, entryStatus) VALUES(?, ?, ?)", (data['rankInfo']['currentRank'][i], data['rankInfo']['previousRank'][i], data['rankInfo']['entryStatus'][i]))
@@ -298,6 +299,7 @@ class DatabaseTracks:
 		tracks_mode_confidence = []
 		tracks_time_signature = []
 		tracks_time_signature_confidence = []
+		tracks_loudness = []
 		## 앨범 정보
 		albums_id = []
 		albums_name = []
@@ -344,6 +346,7 @@ class DatabaseTracks:
 			tracks_mode_confidence.append(trackAnalysis[i]['mode_confidence'])
 			tracks_time_signature.append(trackAnalysis[i]['time_signature'])
 			tracks_time_signature_confidence.append(trackAnalysis[i]['time_signature_confidence'])
+			tracks_loudness.append(trackAnalysis[i]['loudness'])
 		## albumInfo 읽기
 		albumInfo = tracksDB.execute("SELECT * FROM albumInfo").fetchall()
 		for i in range(len(albumInfo)):
@@ -395,7 +398,8 @@ class DatabaseTracks:
 				"mode": tracks_mode,
 				"mode_confidence": tracks_mode_confidence,
 				"time_signature": tracks_time_signature,
-				"time_signature_confidence": tracks_time_signature_confidence
+				"time_signature_confidence": tracks_time_signature_confidence,
+				"loudness": tracks_loudness
 			},
 			"albumInfo": {
 				"id": albums_id,

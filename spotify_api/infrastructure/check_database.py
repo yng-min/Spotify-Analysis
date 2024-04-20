@@ -102,6 +102,7 @@ class CheckTracks:
 		tracks_mode_confidence = []
 		tracks_time_signature = []
 		tracks_time_signature_confidence = []
+		tracks_loudness = []
 		## 앨범 정보
 		albums_id = []
 		albums_name = []
@@ -183,16 +184,19 @@ class CheckTracks:
 							tracks_mode_confidence.append(None)
 							tracks_time_signature.append(None)
 							tracks_time_signature_confidence.append(None)
-						tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
-						tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
-						tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
-						tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
-						tracks_key.append(analysis['data']['trackAnalysis']['key'])
-						tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
-						tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
-						tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
-						tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
-						tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+							tracks_loudness.append(None)
+						else:
+							tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
+							tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
+							tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
+							tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
+							tracks_key.append(analysis['data']['trackAnalysis']['key'])
+							tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
+							tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
+							tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
+							tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
+							tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+							tracks_loudness.append(analysis['data']['trackAnalysis']['loudness'])
 
 						albums_id.append(track['data']['albumInfo']['id'])
 						albums_name.append(track['data']['albumInfo']['name'])
@@ -240,7 +244,8 @@ class CheckTracks:
 							"mode": tracks_mode,
 							"mode_confidence": tracks_mode_confidence,
 							"time_signature": tracks_time_signature,
-							"time_signature_confidence": tracks_time_signature_confidence
+							"time_signature_confidence": tracks_time_signature_confidence,
+							"loudness": tracks_loudness
 						},
 						"albumInfo": {
 							"id": albums_id,
@@ -312,16 +317,19 @@ class CheckTracks:
 					tracks_mode_confidence.append(None)
 					tracks_time_signature.append(None)
 					tracks_time_signature_confidence.append(None)
-				tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
-				tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
-				tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
-				tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
-				tracks_key.append(analysis['data']['trackAnalysis']['key'])
-				tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
-				tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
-				tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
-				tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
-				tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+					tracks_loudness.append(None)
+				else:
+					tracks_analysis_sample_rate.append(analysis['data']['trackAnalysis']['analysis_sample_rate'])
+					tracks_analysis_channels.append(analysis['data']['trackAnalysis']['analysis_channels'])
+					tracks_tempo.append(analysis['data']['trackAnalysis']['tempo'])
+					tracks_tempo_confidence.append(analysis['data']['trackAnalysis']['tempo_confidence'])
+					tracks_key.append(analysis['data']['trackAnalysis']['key'])
+					tracks_key_confidence.append(analysis['data']['trackAnalysis']['key_confidence'])
+					tracks_mode.append(analysis['data']['trackAnalysis']['mode'])
+					tracks_mode_confidence.append(analysis['data']['trackAnalysis']['mode_confidence'])
+					tracks_time_signature.append(analysis['data']['trackAnalysis']['time_signature'])
+					tracks_time_signature_confidence.append(analysis['data']['trackAnalysis']['time_signature_confidence'])
+					tracks_loudness.append(analysis['data']['trackAnalysis']['loudness'])
 
 				albums_id.append(track['data']['albumInfo']['id'])
 				albums_name.append(track['data']['albumInfo']['name'])
@@ -369,7 +377,8 @@ class CheckTracks:
 					"mode": tracks_mode,
 					"mode_confidence": tracks_mode_confidence,
 					"time_signature": tracks_time_signature,
-					"time_signature_confidence": tracks_time_signature_confidence
+					"time_signature_confidence": tracks_time_signature_confidence,
+					"loudness": tracks_loudness
 				},
 				"albumInfo": {
 					"id": albums_id,
