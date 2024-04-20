@@ -6,7 +6,7 @@ from spotify_api.infrastructure import DatabaseCharts
 router = APIRouter(prefix="/charts")
 routes_to_reroute = ["/"]
 
-@router.get("/global_top50", tags=["charts"])
+@router.get("/global", tags=["charts"])
 def global_top50(response: Response, request: Request):
 	data = DatabaseCharts.read()['data']
 
@@ -48,7 +48,7 @@ def global_top50(response: Response, request: Request):
 		html += "<td align='center'>{}</td>".format(rank)
 		html += "<td align='center'>{}</td>".format(data['trackInfo']['name'][i])
 		html += "<td align='center'>{}</td>".format(data['trackInfo']['artists'][i].replace(";;", ","))
-		html += "<td align='center'><a href='{url}' target='_blank'>분석 페이지에서 보기</a></td>".format(url=str(request.url).split("charts/")[0] + "tracks/?uri=" + data['trackInfo']['url'][i].split("track/")[1])
+		html += "<td align='center'><a href='{url}' target='_blank'>분석 페이지에서 보기</a></td>".format(url=str(request.url).split("charts/")[0] + "tracks/?tid=" + data['trackInfo']['url'][i].split("track/")[1])
 		html += "<td align='center'><a href='{url}' target='_blank'>스포티파이에서 듣기</a></td>".format(url=data['trackInfo']['url'][i])
 	html += "</tr>"
 	html += "</table>"

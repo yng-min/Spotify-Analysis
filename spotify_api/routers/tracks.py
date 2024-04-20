@@ -6,12 +6,12 @@ from spotify_api.infrastructure import SpotifyData, DatabaseTracks
 router = APIRouter(prefix="/tracks")
 
 @router.get("/", name="tracks", tags=['tracks'])
-def tracks(response: Response, uri: str = None):
+def tracks(response: Response, tid: str = None):
 	data = DatabaseTracks.read()['data']
-	bart = SpotifyData.get_bart(reco_type=1, reco_str=uri)['data']
+	bart = SpotifyData.get_bart(reco_type=1, reco_str=tid)['data']
 
 	for i in range(len(data['trackInfo']['id'])):
-		if data['trackInfo']['id'][i] == uri:
+		if data['trackInfo']['id'][i] == tid:
 			# html 구축
 			html = "<!DOCTYPE html>"
 			html += "<html lang='ko'>"
