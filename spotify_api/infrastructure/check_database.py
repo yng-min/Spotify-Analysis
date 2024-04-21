@@ -144,7 +144,6 @@ class CheckTracks:
 					print("[Check Tracks] 차트 데이터가 변경되어 최신 정보로 저장합니다...")
 					import time
 					start = time.time()
-					DatabaseTracks.reset()
 
 					for i in range(len(chartResult['entries'])):
 						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
@@ -263,6 +262,7 @@ class CheckTracks:
 							"entryStatus": ranks_entryStatus
 						}
 					}
+					DatabaseTracks.reset()
 					DatabaseTracks.save(data=data)
 					delta = time.time() - start
 					print(f"[Check Tracks] 최신 정보 저장을 완료했습니다. ({delta}초 소요)")
@@ -277,7 +277,6 @@ class CheckTracks:
 			print("[Check Tracks] 차트 데이터가 변경되어 최신 정보로 저장합니다...")
 			import time
 			start = time.time()
-			DatabaseTracks.reset()
 
 			for i in range(len(chartResult['entries'])):
 				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
@@ -396,6 +395,7 @@ class CheckTracks:
 					"entryStatus": ranks_entryStatus
 				}
 			}
+			DatabaseTracks.reset()
 			DatabaseTracks.save(data=data)
 			delta = time.time() - start
 			print(f"[Check Tracks] 최신 정보 저장을 완료했습니다. ({delta}초 소요)")
