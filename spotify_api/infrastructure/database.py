@@ -157,6 +157,7 @@ class DatabaseTracks:
 			CREATE TABLE IF NOT EXISTS trackDetails(
 				preview_url TEXT,
 				duration_ms INTEGER,
+				explicit INTEGER,
 				popularity INTEGER,
 				danceability REAL,
 				energy REAL,
@@ -252,7 +253,7 @@ class DatabaseTracks:
 		## 트랙 데이터 저장
 		for i in range(len(data['trackInfo']['id'])):
 			tracksDB.execute("INSERT INTO trackInfo(id, name) VALUES(?, ?)", (data['trackInfo']['id'][i], data['trackInfo']['name'][i]))
-			tracksDB.execute("INSERT INTO trackDetails(preview_url, duration_ms, popularity, danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackDetails']['preview_url'][i], data['trackDetails']['duration_ms'][i], data['trackDetails']['popularity'][i], data['trackDetails']['danceability'][i], data['trackDetails']['energy'][i], data['trackDetails']['speechiness'][i], data['trackDetails']['acousticness'][i], data['trackDetails']['instrumentalness'][i], data['trackDetails']['liveness'][i], data['trackDetails']['valence'][i]))
+			tracksDB.execute("INSERT INTO trackDetails(preview_url, duration_ms, explicit, popularity, danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackDetails']['preview_url'][i], data['trackDetails']['duration_ms'][i], data['trackDetails']['explicit'][i], data['trackDetails']['popularity'][i], data['trackDetails']['danceability'][i], data['trackDetails']['energy'][i], data['trackDetails']['speechiness'][i], data['trackDetails']['acousticness'][i], data['trackDetails']['instrumentalness'][i], data['trackDetails']['liveness'][i], data['trackDetails']['valence'][i]))
 			tracksDB.execute("INSERT INTO trackAnalysis(analysis_sample_rate, analysis_channels, tempo, tempo_confidence, key, key_confidence, mode, mode_confidence, time_signature, time_signature_confidence, loudness) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data['trackAnalysis']['analysis_sample_rate'][i], data['trackAnalysis']['analysis_channels'][i], data['trackAnalysis']['tempo'][i], data['trackAnalysis']['tempo_confidence'][i], data['trackAnalysis']['key'][i], data['trackAnalysis']['key_confidence'][i], data['trackAnalysis']['mode'][i], data['trackAnalysis']['mode_confidence'][i], data['trackAnalysis']['time_signature'][i], data['trackAnalysis']['time_signature_confidence'][i], data['trackAnalysis']['loudness'][i]))
 			tracksDB.execute("INSERT INTO albumInfo(id, name, image, release_date) VALUES(?, ?, ? ,?)", (data['albumInfo']['id'][i], data['albumInfo']['name'][i], data['albumInfo']['image'][i], data['albumInfo']['release_date'][i]))
 			tracksDB.execute("INSERT INTO artistInfo(id, name) VALUES(?, ?)", (data['artistInfo']['id'][i][:-3], data['artistInfo']['name'][i][:-3]))
@@ -280,6 +281,7 @@ class DatabaseTracks:
 		## 트랙 특징 정보
 		tracks_preview_url = []
 		tracks_duration_ms = []
+		tracks_explicit = []
 		tracks_popularity = []
 		tracks_danceability = []
 		tracks_energy = []
@@ -325,6 +327,7 @@ class DatabaseTracks:
 		for i in range(len(trackDetails)):
 			tracks_preview_url.append(trackDetails[i]['preview_url'])
 			tracks_duration_ms.append(trackDetails[i]['duration_ms'])
+			tracks_explicit.append(trackDetails[i]['explicit'])
 			tracks_popularity.append(trackDetails[i]['popularity'])
 			tracks_danceability.append(trackDetails[i]['danceability'])
 			tracks_energy.append(trackDetails[i]['energy'])
@@ -379,6 +382,7 @@ class DatabaseTracks:
 			"trackDetails": {
 				"preview_url": tracks_preview_url,
 				"duration_ms": tracks_duration_ms,
+				"explicit": tracks_explicit,
 				"popularity": tracks_popularity,
 				"danceability": tracks_danceability,
 				"energy": tracks_energy,

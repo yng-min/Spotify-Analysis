@@ -36,6 +36,7 @@ def getTracks(url: str):
 				"name": trackData['artists'][i]['name']
 			})
 		track_popularity = trackData['popularity']
+		track_explicit = trackData['explicit']
 		track_preview_url = trackData['preview_url']
 		album_id = trackData['album']['id']
 		album_name = trackData['album']['name']
@@ -49,6 +50,7 @@ def getTracks(url: str):
 			},
 			"trackDetails": {
 				"popularity": track_popularity,
+				"explicit": track_explicit,
 				"preview_url": track_preview_url
 			},
 			"albumInfo": {

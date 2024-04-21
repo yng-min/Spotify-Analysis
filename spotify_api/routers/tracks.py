@@ -35,6 +35,7 @@ def tracks(response: Response, tid: str = None):
 			html += "<th align='center' style='color: grey; font-size: 12px;'>곡 길이</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>앨범</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>발매일</th>"
+			# html += "<th align='center' style='color: grey; font-size: 12px;'>유해성 콘텐츠</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>미리 들어보기</th>"
 			html += "<th align='center' style='color: grey; font-size: 12px;'>스포티파이에서 듣기</th>"
 			html += "<tr>"
@@ -61,6 +62,7 @@ def tracks(response: Response, tid: str = None):
 			html += "<td align='center'>{}</td>".format(m_s)
 			html += "<td align='center'>{}</td>".format(data['albumInfo']['name'][i])
 			html += "<td align='center'>{}</td>".format(data['albumInfo']['release_date'][i])
+			# html += "<td align='center'>{}</td>".format("X" if data['trackDetails']['explicit'][i] == False else "O")
 			if data['trackDetails']['preview_url'][i] != None:
 				html += "<td align='center'><a href='{}' target='_blank'>30초 미리듣기</a></td>".format(data['trackDetails']['preview_url'][i])
 			else:

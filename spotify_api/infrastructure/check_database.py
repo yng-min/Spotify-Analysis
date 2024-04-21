@@ -84,6 +84,7 @@ class CheckTracks:
 		tracks_preview_url = []
 		tracks_duration_ms = []
 		tracks_popularity = []
+		tracks_explicit = []
 		tracks_danceability = []
 		tracks_energy = []
 		tracks_speechiness = []
@@ -147,7 +148,7 @@ class CheckTracks:
 
 					for i in range(len(chartResult['entries'])):
 						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
-						print(i)
+						print(f"- Track: {i+1}")
 						time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
 						track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 						print(track)
@@ -163,6 +164,7 @@ class CheckTracks:
 
 						tracks_preview_url.append(track['data']['trackDetails']['preview_url'])
 						tracks_duration_ms.append(feature['data']['trackInfo']['duration_ms'])
+						tracks_explicit.append(track['data']['trackDetails']['explicit'])
 						tracks_popularity.append(track['data']['trackDetails']['popularity'])
 						tracks_danceability.append(feature['data']['trackFeatures']['danceability'])
 						tracks_energy.append(feature['data']['trackFeatures']['energy'])
@@ -224,6 +226,7 @@ class CheckTracks:
 						"trackDetails": {
 							"preview_url": tracks_preview_url,
 							"duration_ms": tracks_duration_ms,
+							"explicit": tracks_explicit,
 							"popularity": tracks_popularity,
 							"danceability": tracks_danceability,
 							"energy": tracks_energy,
@@ -280,7 +283,7 @@ class CheckTracks:
 
 			for i in range(len(chartResult['entries'])):
 				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
-				print(i)
+				print(f"- Track: {i+1}")
 				time.sleep(0.1) # Spotify API ratelimit에 대처하기 위한 딜레이
 				track = SpotifyData.get_tracks(url=chartResult['entries'][i]['trackMetadata']['trackUri'])
 				print(track)
@@ -296,6 +299,7 @@ class CheckTracks:
 
 				tracks_preview_url.append(track['data']['trackDetails']['preview_url'])
 				tracks_duration_ms.append(feature['data']['trackInfo']['duration_ms'])
+				tracks_explicit.append(track['data']['trackDetails']['explicit'])
 				tracks_popularity.append(track['data']['trackDetails']['popularity'])
 				tracks_danceability.append(feature['data']['trackFeatures']['danceability'])
 				tracks_energy.append(feature['data']['trackFeatures']['energy'])
@@ -357,6 +361,7 @@ class CheckTracks:
 				"trackDetails": {
 					"preview_url": tracks_preview_url,
 					"duration_ms": tracks_duration_ms,
+					"explicit": tracks_explicit,
 					"popularity": tracks_popularity,
 					"danceability": tracks_danceability,
 					"energy": tracks_energy,

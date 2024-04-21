@@ -40,7 +40,7 @@ def getGlobalWeeklyCharts(url: str = globalChartURL):
 			track_url = []
 			track_image = []
 
-			print(len(track_chartData))
+			print(f"- Total Tracks: {len(track_chartData)}")
 			for i in range(len(track_chartData)):
 				# 현재 트랙 순위
 				track_currentRank.append(track_chartData[i]['chartEntryData']['currentRank'])
